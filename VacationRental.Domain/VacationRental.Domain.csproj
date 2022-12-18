@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+    <Folder Include="Models\DataContracts\Request\" />
+    <Folder Include="Models\DataContracts\Response\" />
+    <Folder Include="Models\DataContracts\" />
+    <Folder Include="Models\Entities\" />
+    <Folder Include="Services\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+</Project>
