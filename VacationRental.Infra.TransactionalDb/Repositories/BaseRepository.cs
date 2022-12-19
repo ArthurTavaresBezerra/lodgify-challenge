@@ -13,7 +13,7 @@ namespace VacationRental.Infra.TransactionalDb.Repositories
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : EntityBase
     {
-        private TransDbContext Db;
+        protected TransDbContext Db;
 
         public BaseRepository(TransDbContext context)
         {
@@ -38,6 +38,7 @@ namespace VacationRental.Infra.TransactionalDb.Repositories
 
         public async Task<TEntity> AddAsync(TEntity obj)
         {
+            obj.CreateAt = DateTime.UtcNow;
             var entity = await Db.Set<TEntity>().AddAsync(obj);
             return entity.Entity;
         }

@@ -7,9 +7,13 @@ using VacationRental.Domain.ViewModels;
 
 namespace VacationRental.Domain.Services
 {
-    public interface IRentalService
+    public interface IAvailabilityCheckService
     {
-        Task<RentalViewModel> GetById(int id);
-        Task<RentalViewModel> Insert(RentalViewModel rentalViewModel);
+        Task Check(BookingViewModel booking);
+         
     }
 }
+
+           
+
+

@@ -1,17 +1,15 @@
 ﻿using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VacationRental.Infra.TransactionalDb.Database;
 using VacationRental.Domain;
 using VacationRental.Domain.Repositories;
-using VacationRental.Infra.TransactionalDb.Repositories;
-using AutoMapper;
 using VacationRental.Domain.Mappers;
 using VacationRental.Domain.Services;
-using VacationRental.BusinessLogic;
+using VacationRental.Infra.TransactionalDb.Repositories;
+using AutoMapper;
+using VacationRental.BusinessLogic.Services;
 
 namespace VacationRental.CrossCutting
 {
@@ -31,6 +29,8 @@ namespace VacationRental.CrossCutting
         {
             //Business
             services.AddScoped<IRentalService, RentalService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<IAvailabilityCheckService, AvailabilityCheckService>();
             //Repositories
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IRentalRepository, RentalRepository>();

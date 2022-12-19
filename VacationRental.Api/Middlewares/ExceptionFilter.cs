@@ -28,7 +28,7 @@ namespace VacationRental.Api.Middlewares
                     Errors = new List<string> { ex.Message }
                 };
 
-                context.Result = new ObjectResult(response) { StatusCode = (int)HttpStatusCode.PreconditionRequired };
+                context.Result = new ObjectResult(response) { StatusCode = (int)HttpStatusCode.PreconditionFailed };
             }
             else
             {
