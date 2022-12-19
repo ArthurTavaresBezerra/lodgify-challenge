@@ -14,36 +14,56 @@ namespace VacationRental.BusinessLogic.Services
     {
 
         private readonly IBookingRepository _bookingRepository;
-        private readonly IRentalRepository _rentalRepository;
+        private readonly IPreparationTimeRepository _preparationTimeRepository;
 
-        public AvailabilityCheckService(IBookingRepository bookingRepository, IRentalRepository rentalRepository)
+
+        public AvailabilityCheckService(
+                IBookingRepository bookingRepository, 
+                IPreparationTimeRepository preparationTimeRepository)
         {
-            _rentalRepository = rentalRepository;
             _bookingRepository = bookingRepository;
+            _preparationTimeRepository = preparationTimeRepository;
         }
 
-        public async Task Check(BookingViewModel newBooking)
+        public IEnumerable<AppointmentEntityBase> CheckAvailability(
+                RentalEntity rental,
+                AppointmentEntityBase newAppointment, 
+                bool withPreparationTimes = true)
         {
-            var rental = await _rentalRepository.GetByIdAsync(newBooking.RentalId);
 
-            if (rental == null)
-                throw new ApplicationException("Rental not found");
+            List<AppointmentEntityBase> unitsBookedOrBlockeds = UnitsBookeds(newAppointment, rental.Id).ToList();
 
-            var bookeds = _bookingRepository.GetAllByRental(rental.Id);
+            if (withPreparationTimes)
+                unitsBookedOrBlockeds.AddRange(UnitsBlockeds(newAppointment, rental.Id).ToList());
 
-            Func<BookingEntity, bool> isAlredyBooked = (booked) =>
-            {
+            bool thereArentAnyUnitAvailable = unitsBookedOrBlockeds.GroupBy(c => c.Unit).Count() >= rental.Units;
+            bool thatUnitIsNotAvailable = newAppointment.Unit > 0 && unitsBookedOrBlockeds.Any(c => c.Unit == newAppointment.Unit);
 
-                var isStartIn = booked.Start <= newBooking.Start.Date && booked.End > newBooking.Start.Date;
-                var isEndIn = booked.Start < newBooking.End && booked.End >= newBooking.End;
-                var isBookedIntoNewBooking = booked.Start > newBooking.Start && booked.End < newBooking.End;
-
-                return (isStartIn || isEndIn || isBookedIntoNewBooking);
-            };
-
-            var unitsInUse = bookeds.Where(isAlredyBooked).Count();
-            if (unitsInUse >= rental.Units)
+            if (thereArentAnyUnitAvailable || thatUnitIsNotAvailable) 
                 throw new ApplicationException("Not available");
+
+            return unitsBookedOrBlockeds;
         }
+
+        private IEnumerable<AppointmentEntityBase> UnitsBookeds(AppointmentEntityBase newAppointment, int rentalId)
+        {
+            var bookeds = _bookingRepository.GetAllByRental(rentalId);
+            return bookeds.Where(c => isAlredyBookedFunction(c, newAppointment)).ToList();
+        }
+        
+        private IEnumerable<AppointmentEntityBase> UnitsBlockeds(AppointmentEntityBase newAppointment, int rentalId)
+        {
+            var preparationtimes = _preparationTimeRepository.GetAllByRental(rentalId);
+            return preparationtimes.Where(pt => isAlredyBookedFunction(pt, newAppointment)).ToList();
+        }
+
+        private Func<AppointmentEntityBase, AppointmentEntityBase, bool> isAlredyBookedFunction = (booked, newAppointment) =>
+        {
+            var isStartIn = booked.Start <= newAppointment.Start.Date && booked.End > newAppointment.Start.Date;
+            var isEndIn = booked.Start < newAppointment.End && booked.End >= newAppointment.End;
+            var isBookedIntoNewBooking = booked.Start > newAppointment.Start && booked.End < newAppointment.End;
+
+            return (isStartIn || isEndIn || isBookedIntoNewBooking);
+        };
     }
 }

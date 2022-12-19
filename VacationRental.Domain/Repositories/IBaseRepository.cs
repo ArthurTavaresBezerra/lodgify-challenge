@@ -17,7 +17,10 @@ namespace VacationRental.Domain.Repositories
 
         Task<TEntity> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties);
 
-        Task UpdateAsync(TEntity obj);
+        void UpdateAsync(TEntity obj);
 
+        void RemoveRangeAsync(IEnumerable<TEntity> list);
+
+        Task AddRangeAsync(IEnumerable<TEntity> list);
     }
 }

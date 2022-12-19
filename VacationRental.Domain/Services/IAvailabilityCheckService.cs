@@ -9,8 +9,7 @@ namespace VacationRental.Domain.Services
 {
     public interface IAvailabilityCheckService
     {
-        Task Check(BookingViewModel booking);
-         
+        IEnumerable<AppointmentEntityBase> CheckAvailability(RentalEntity rental, AppointmentEntityBase newAppointment, bool withPreparationTimes = true);
     }
 }
 

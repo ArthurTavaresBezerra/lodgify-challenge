@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ViewModels\Request\" />
-    <Folder Include="Models\ViewModels\Response\" />
+    <Folder Include="Models\ViewModels\Request\Calendar\" />
+    <Folder Include="Models\ViewModels\Request\Booking\" />
     <Folder Include="Extensions\" />
   </ItemGroup>
 

@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.BindingModels;
 using VacationRental.Domain.Services;
-using VacationRental.Domain.ViewModels;
+using VacationRental.Domain.ViewModels.Response.Calendar;
 
 namespace VacationRental.Api.Controllers
 {
@@ -21,6 +21,6 @@ namespace VacationRental.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<CalendarViewModel>> Get([FromQuery] CalendarBindingModel calendar) => Ok(await _calendarService.GetCalendar(calendar.RentalId, calendar.Start, calendar.Nights));
+        public async Task<ActionResult<GetCalendarViewModel>> Get([FromQuery] CalendarBindingModel calendar) => Ok(await _calendarService.GetCalendar(calendar.RentalId, calendar.Start, calendar.Nights));
     }
 }

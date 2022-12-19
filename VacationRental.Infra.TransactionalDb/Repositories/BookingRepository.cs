@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,12 @@ namespace VacationRental.Infra.TransactionalDb.Repositories
 
         public IEnumerable<BookingEntity> GetAllByRental(int id)
         {
-            return Db.Bookings.Where(c => c.Rental.Id == id).ToList();
+            return Db.Bookings.AsNoTracking().Where(c => c.Rental.Id == id).ToList();
+        }
+
+        public bool IsExistsByUnits(int rentalId, IEnumerable<int> unitsToRemove)
+        {
+            return Db.Bookings.Where(c => c.Rental.Id == rentalId && unitsToRemove.Any(u=> u == c.Unit)).Any();
         }
     }
 }

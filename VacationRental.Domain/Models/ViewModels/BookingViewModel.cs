@@ -9,6 +9,6 @@ namespace VacationRental.Domain.ViewModels
         public DateTime Start { get; set; }
         public int Nights { get; set; }
         public DateTime End => Start.AddDays(Nights);
-
+        public int Unit { get; set; }
     }
 }

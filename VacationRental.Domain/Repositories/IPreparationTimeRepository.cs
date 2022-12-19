@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using VacationRental.Domain.Entities;
-using VacationRental.Domain.ViewModels;
 
 namespace VacationRental.Domain.Repositories
 {
-    public interface IBookingRepository : IBaseRepository<BookingEntity>
+    public interface IPreparationTimeRepository : IBaseRepository<PreparationTimeEntity>
     {
-        IEnumerable<BookingEntity> GetAllByRental(int id);
+        IEnumerable<PreparationTimeEntity> GetAllByRental(int id);
         bool IsExistsByUnits(int rentalId, IEnumerable<int> unitsToRemove);
     }
 }

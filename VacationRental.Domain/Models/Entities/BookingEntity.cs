@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace VacationRental.Domain.Entities
 {
-    public class BookingEntity : EntityBase
+    public class BookingEntity : AppointmentEntityBase
     {
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
-
         public RentalEntity Rental { get; set; }
+        public IEnumerable<PreparationTimeEntity> PreparationTimes { get; set; }
     }
 }

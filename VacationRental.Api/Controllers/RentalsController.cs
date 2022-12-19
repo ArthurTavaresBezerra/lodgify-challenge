@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.BindingModels;
 using VacationRental.Domain.Services;
 using VacationRental.Domain.ViewModels;
+using VacationRental.Domain.ViewModels.Request.Rental;
+using VacationRental.Domain.ViewModels.Response.Rental;
 
 namespace VacationRental.Api.Controllers
 {
@@ -21,13 +21,29 @@ namespace VacationRental.Api.Controllers
 
         [HttpGet]
         [Route("{rentalId:int}")]
-        public async Task<ActionResult<RentalViewModel>> Get(int rentalId) => Ok(await _rentalService.GetById(rentalId));
+        public async Task<ActionResult<GetRentalViewModel>> Get(int rentalId) => Ok(await _rentalService.GetById(rentalId));
 
         [HttpPost]
-        public async Task<ActionResult<ResourceIdViewModel>> Post(RentalBindingModel model)
+        public async Task<ActionResult<ResourceIdViewModel>> Post(PostRentalBindingModel model)
         {
-            RentalViewModel rental = await _rentalService.Insert( new RentalViewModel { Units = model.Units });
-            return Ok(new ResourceIdViewModel { Id = rental.Id});
+            GetRentalViewModel rental = await _rentalService.Insert(new PostRentalViewModel 
+            { 
+                Units = model.Units, 
+                PreparationTimeInDays = model.PreparationTimeInDays 
+            });
+            return Ok(new ResourceIdViewModel { Id = rental.Id });
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ResourceIdViewModel>> Put(PutRentalBindingModel model)
+        {
+            GetRentalViewModel rental = await _rentalService.Update(new PutRentalViewModel 
+            { 
+                Id = model.Id, 
+                Units = model.Units,
+                PreparationTimeInDays = model.PreparationTimeInDays
+            });
+            return Ok(new ResourceIdViewModel { Id = rental.Id });
         }
     }
 }

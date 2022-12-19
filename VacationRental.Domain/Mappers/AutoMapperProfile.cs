@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using VacationRental.Domain.Entities;
 using VacationRental.Domain.ViewModels;
+using VacationRental.Domain.ViewModels.Request.Rental;
+using VacationRental.Domain.ViewModels.Response.Rental;
 
 namespace VacationRental.Domain.Mappers
 {
@@ -12,8 +11,12 @@ namespace VacationRental.Domain.Mappers
 
         public AutoMapperProfile()
         {
-            this.CreateMap<RentalEntity, RentalViewModel>();
-            this.CreateMap<RentalViewModel, RentalEntity>();
+            this.CreateMap<RentalEntity, PutRentalViewModel>();
+            this.CreateMap<PutRentalViewModel, RentalEntity>();
+            this.CreateMap<RentalEntity, PostRentalViewModel>();
+            this.CreateMap<PostRentalViewModel, RentalEntity>();
+            this.CreateMap<RentalEntity, GetRentalViewModel>();
+            this.CreateMap<GetRentalViewModel, RentalEntity>();
 
             this.CreateMap<BookingViewModel, BookingEntity>()
                 .ForMember(d=> d.End, s=> s.MapFrom(m=> m.Start.AddDays(m.Nights)))

@@ -19,7 +19,7 @@ namespace VacationRental.CrossCutting
 
         public static void InjectContext(IServiceCollection services, IConfiguration configuration)
         {
-            var databaseConnectionString = Environment.GetEnvironmentVariable(_connection) ?? configuration.GetConnectionString(_connection);
+            var databaseConnectionString = configuration.GetConnectionString(_connection);
             services.AddDbContext<TransDbContext>(
                 optionsBuilder => optionsBuilder.UseSqlServer(databaseConnectionString));
             services.AddScoped<DatabaseManager, DatabaseManager>();
@@ -35,6 +35,7 @@ namespace VacationRental.CrossCutting
             //Repositories
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IRentalRepository, RentalRepository>();
+            services.AddScoped<IPreparationTimeRepository, PreparationTimeRepository>();
             //Data
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

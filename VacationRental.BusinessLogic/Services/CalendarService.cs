@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using VacationRental.Domain.Entities;
 using VacationRental.Domain.Repositories;
 using VacationRental.Domain.Services;
-using VacationRental.Domain.ViewModels;
+using VacationRental.Domain.ViewModels.Response.Calendar;
 using System.Linq;
 
 namespace VacationRental.BusinessLogic.Services
@@ -15,14 +15,19 @@ namespace VacationRental.BusinessLogic.Services
 
         private readonly IBookingRepository _bookingRepository;
         private readonly IRentalRepository _rentalRepository;
+        private readonly IPreparationTimeRepository _preparationTimeRepository;
 
-        public CalendarService(IBookingRepository bookingRepository, IRentalRepository rentalRepository)
+        public CalendarService(
+                IBookingRepository bookingRepository, 
+                IRentalRepository rentalRepository,
+                IPreparationTimeRepository preparationTimeRepository)
         {
             _rentalRepository = rentalRepository;
             _bookingRepository = bookingRepository;
+            _preparationTimeRepository = preparationTimeRepository;
         }
 
-        public async Task<CalendarViewModel> GetCalendar(int rentalId, DateTime start, int nights)
+        public async Task<GetCalendarViewModel> GetCalendar(int rentalId, DateTime start, int nights)
         {
             var rental = await _rentalRepository.GetByIdAsync(rentalId);
 
@@ -30,29 +35,57 @@ namespace VacationRental.BusinessLogic.Services
                 throw new ApplicationException("Rental not found");
 
             var bookeds = _bookingRepository.GetAllByRental(rental.Id);
+            var ppTimes = _preparationTimeRepository.GetAllByRental(rental.Id);
 
-            var result = new CalendarViewModel
+
+            return MountObjectResult( rental, start, nights, bookeds, ppTimes);
+        }
+
+        private GetCalendarViewModel MountObjectResult(
+                RentalEntity rental,
+                DateTime start, 
+                int nights,
+                IEnumerable<BookingEntity> bookeds, 
+                IEnumerable<PreparationTimeEntity> ppTimes)
+        {
+
+            List<GetCalendarDateViewModel> dates = new List<GetCalendarDateViewModel>();
+
+            foreach (DateTime currentDate in DateRange(start, nights))
+                dates.Add(MountCalendarDateView(currentDate, bookeds, ppTimes));
+
+            return new GetCalendarViewModel { RentalId = rental.Id, Dates = dates };
+        }
+
+        private GetCalendarDateViewModel MountCalendarDateView(
+            DateTime currentDate,
+            IEnumerable<BookingEntity> bookeds,
+            IEnumerable<PreparationTimeEntity> ppTimes)
+        {
+            var bookingsCal = bookeds.Where(c => c.Start <= currentDate && c.End > currentDate)
+                                          .Select(c => new GetCalendarBookingViewModel { Id = c.Id, Unit = c.Unit })
+                                          .ToList();
+
+            var ppTimesCal = ppTimes.Where(c => c.Start <= currentDate && c.End > currentDate)
+                                    .Select(c => new GetCalendarPreparationTimeViewModel { Unit = c.Unit })
+                                    .ToList();
+            
+            return new GetCalendarDateViewModel
             {
-                RentalId = rentalId,
-                Dates = new List<CalendarDateViewModel>()
+                Date = currentDate,
+                Bookings = bookingsCal,
+                PreparationTimes = ppTimesCal
             };
+        }
 
+        private List<DateTime> DateRange(DateTime start, int nights)
+        {
+            List<DateTime> dateRange = new List<DateTime>();
             for (var night = 0; night < nights; night++)
             {
-                DateTime currentDate = start.Date.AddDays(night).Date;
-
-                var bookings = bookeds.Where(c => c.Start <= currentDate && c.End > currentDate)
-                                        .Select(c=> new CalendarBookingViewModel { Id = c.Id })
-                                        .ToList();
-
-                result.Dates.Add( new CalendarDateViewModel
-                {
-                    Date = currentDate,
-                    Bookings = bookings
-                });
+                dateRange.Add(start.Date.AddDays(night).Date);
             }
-
-            return result;
+            return dateRange;
         }
     }
 }

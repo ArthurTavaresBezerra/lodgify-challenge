@@ -34,7 +34,7 @@ namespace VacationRental.Infra.TransactionalDb.Repositories
             return await queryable.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task UpdateAsync(TEntity obj ) => Db.Entry(obj).State = EntityState.Modified;
+        public void UpdateAsync(TEntity obj ) => Db.Entry(obj).State = EntityState.Modified;
 
         public async Task<TEntity> AddAsync(TEntity obj)
         {
@@ -42,5 +42,15 @@ namespace VacationRental.Infra.TransactionalDb.Repositories
             var entity = await Db.Set<TEntity>().AddAsync(obj);
             return entity.Entity;
         }
+
+        public async Task AddRangeAsync(IEnumerable<TEntity> list)
+        {
+            foreach(var item in list)
+                item.CreateAt = DateTime.UtcNow;
+
+            await Db.Set<TEntity>().AddRangeAsync(list);
+        }
+
+        public void RemoveRangeAsync(IEnumerable<TEntity> list) => Db.Set<TEntity>().RemoveRange(list);
     }
 }
