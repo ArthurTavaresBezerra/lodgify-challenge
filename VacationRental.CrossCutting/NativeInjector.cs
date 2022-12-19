@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VacationRental.Infra.TransactionalDb.Database;
 using VacationRental.Domain;
+using VacationRental.Domain.Repositories;
+using VacationRental.Infra.TransactionalDb.Repositories;
 
 namespace VacationRental.CrossCutting
 {
@@ -25,7 +27,8 @@ namespace VacationRental.CrossCutting
         {
             //Business
             //Repositories
-            
+            services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<IRentalRepository, RentalRepository>();
             //Data
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

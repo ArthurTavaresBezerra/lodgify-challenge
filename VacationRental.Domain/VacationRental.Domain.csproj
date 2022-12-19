@@ -9,8 +9,6 @@
     <Folder Include="Models\ViewModels\Request\" />
     <Folder Include="Models\ViewModels\Response\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
