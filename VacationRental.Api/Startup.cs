@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using VacationRental.Domain.ViewModels;
 using VacationRental.CrossCutting;
+using VacationRental.Api.Middlewares;
 
 namespace VacationRental.Api
 {
@@ -29,6 +30,8 @@ namespace VacationRental.Api
             services.AddSingleton<IDictionary<int, RentalViewModel>>(new Dictionary<int, RentalViewModel>());
             services.AddSingleton<IDictionary<int, BookingViewModel>>(new Dictionary<int, BookingViewModel>());
 
+            services.AddMvcCore(options => options.Filters.Add<ExceptionFilter>());
+
 
             NativeInjector.InjectContext(services, Configuration);
             NativeInjector.RegisterServices(services);
@@ -47,7 +50,7 @@ namespace VacationRental.Api
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationRental v1"));
-             
+
         }
     }
 }

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VacationRental.BusinessLogic\VacationRental.BusinessLogic.csproj" />
     <ProjectReference Include="..\VacationRental.Infra.TransactionalDb\VacationRental.Infra.TransactionalDb.csproj" />
   </ItemGroup>
 

@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\VacationRental.CrossCutting\VacationRental.Infra.CrossCutting.csproj" />
     <ProjectReference Include="..\VacationRental.Domain\VacationRental.Domain.csproj" />
   </ItemGroup>

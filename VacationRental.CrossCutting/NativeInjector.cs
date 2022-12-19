@@ -8,6 +8,10 @@ using VacationRental.Infra.TransactionalDb.Database;
 using VacationRental.Domain;
 using VacationRental.Domain.Repositories;
 using VacationRental.Infra.TransactionalDb.Repositories;
+using AutoMapper;
+using VacationRental.Domain.Mappers;
+using VacationRental.Domain.Services;
+using VacationRental.BusinessLogic;
 
 namespace VacationRental.CrossCutting
 {
@@ -26,6 +30,7 @@ namespace VacationRental.CrossCutting
         public static void RegisterServices(IServiceCollection services)
         {
             //Business
+            services.AddScoped<IRentalService, RentalService>();
             //Repositories
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IRentalRepository, RentalRepository>();
@@ -35,7 +40,11 @@ namespace VacationRental.CrossCutting
 
         public static void RegisterAutoMapper(IServiceCollection services)
         {
-             
+            MapperConfiguration mc = new MapperConfiguration(c=> 
+            {
+                c.AddProfile(new AutoMapperProfile());
+            });
+            services.AddSingleton(mc.CreateMapper());
         }
 
         public static void ConfigureContext(IServiceCollection services)
