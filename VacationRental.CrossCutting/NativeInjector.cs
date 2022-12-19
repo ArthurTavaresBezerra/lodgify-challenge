@@ -31,6 +31,7 @@ namespace VacationRental.CrossCutting
             services.AddScoped<IRentalService, RentalService>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<IAvailabilityCheckService, AvailabilityCheckService>();
+            services.AddScoped<ICalendarService, CalendarService>();
             //Repositories
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IRentalRepository, RentalRepository>();

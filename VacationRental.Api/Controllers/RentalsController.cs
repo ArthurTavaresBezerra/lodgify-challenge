@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+using VacationRental.Api.BindingModels;
 using VacationRental.Domain.Services;
 using VacationRental.Domain.ViewModels;
 

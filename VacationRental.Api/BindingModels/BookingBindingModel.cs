@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace VacationRental.Api.Models
+namespace VacationRental.Api.BindingModels
 {
     public class BookingBindingModel
     {
