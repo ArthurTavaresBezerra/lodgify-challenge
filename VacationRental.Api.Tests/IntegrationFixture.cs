@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.IO;
 using System.Net.Http;
 using Xunit;
 
@@ -15,7 +17,13 @@ namespace VacationRental.Api.Tests
 
         public IntegrationFixture()
         {
-            _server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
+            var path = Directory.GetCurrentDirectory() ;
+            _server = new TestServer(
+                new WebHostBuilder().UseStartup<Startup>()
+                    .UseEnvironment("test")
+                    .UseConfiguration(new ConfigurationBuilder().SetBasePath(path)
+                        .Build())
+                );
 
             Client = _server.CreateClient();
         }
@@ -25,5 +33,6 @@ namespace VacationRental.Api.Tests
             Client.Dispose();
             _server.Dispose();
         }
+
     }
 }
