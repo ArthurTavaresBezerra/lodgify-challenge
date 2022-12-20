@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VacationRental.Domain;
 using VacationRental.Domain.Entities;
@@ -61,7 +62,7 @@ namespace VacationRental.BusinessLogic.Services
 
         public async Task<BookingViewModel> GetById(int id)
         {
-            var rental = await _bookingRepository.GetByIdAsync(id);
+            var rental = await _bookingRepository.GetByIdAsync(id, (a) => a.Rental);
 
             if (rental == null)
                 throw new ApplicationException("Booking not found");

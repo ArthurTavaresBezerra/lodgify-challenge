@@ -10,19 +10,29 @@ using VacationRental.Domain.Services;
 using VacationRental.Infra.TransactionalDb.Repositories;
 using AutoMapper;
 using VacationRental.BusinessLogic.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace VacationRental.CrossCutting
 {
     public class NativeInjector
     {
         private static string _connection = "DefaultConnection";
+        private static string _testEnvironment = "test";
 
         public static void InjectContext(IServiceCollection services, IConfiguration configuration)
         {
-            var databaseConnectionString = configuration.GetConnectionString(_connection);
-            services.AddDbContext<TransDbContext>(
-                optionsBuilder => optionsBuilder.UseSqlServer(databaseConnectionString));
-            services.AddScoped<DatabaseManager, DatabaseManager>();
+            var env = GetEnvironmentInstance(services);
+            if (env.EnvironmentName == _testEnvironment)
+            {
+                services.AddDbContext<TransDbContext>(options => options.UseInMemoryDatabase(databaseName: "DbInMemory"));
+            }
+            else
+            {
+                var databaseConnectionString = configuration.GetConnectionString(_connection);
+                services.AddDbContext<TransDbContext>(
+                    optionsBuilder => optionsBuilder.UseSqlServer(databaseConnectionString));
+                services.AddScoped<DatabaseManager, DatabaseManager>();
+            }
         }
 
         public static void RegisterServices(IServiceCollection services)
@@ -60,8 +70,18 @@ namespace VacationRental.CrossCutting
 
                 if (databaseManager != null)
                     _ = databaseManager.EnsureCreated();
-            } 
-        } 
+            }
+        }
+
+        public static IHostingEnvironment GetEnvironmentInstance(IServiceCollection services)
+        {
+            var sp = services.BuildServiceProvider();
+            using (var scope = sp.CreateScope())
+            {
+                var scopedServices = scope.ServiceProvider;
+                return scope?.ServiceProvider.GetService<IHostingEnvironment>();
+            }
+        }
 
     }
 }

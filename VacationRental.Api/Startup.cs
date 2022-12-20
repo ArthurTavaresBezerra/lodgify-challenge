@@ -42,7 +42,7 @@ namespace VacationRental.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
+            } 
 
             app.UseMvc();
             app.UseSwagger();
